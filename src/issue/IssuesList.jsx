@@ -1,27 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 
-const Navbar = () => {
-  return (
-    <nav className="bg-gray-900 p-4 shadow-md">
-      <div className="max-w-6xl mx-auto flex justify-between items-center">
-        <h1 className="text-white text-2xl font-bold">لوحة التحكم</h1>
-        <ul className="flex space-x-6">
-          <li>
-            <Link to="/" className="text-gray-300 hover:text-white">الرئيسية</Link>
-          </li>
-          <li>
-            <Link to="/issues" className="text-gray-300 hover:text-white">قائمة المشاكل</Link>
-          </li>
-          <li>
-            <Link to="/add-issue" className="text-gray-300 hover:text-white">إضافة مشكلة</Link>
-          </li>
-        </ul>
-      </div>
-    </nav>
-  );
-};
-
 const IssuesList = () => {
   const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -49,12 +28,13 @@ const IssuesList = () => {
     try {
       const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
       if (!response.ok) throw new Error("فشل في حذف المشكلة");
-      setIssues((prev) => prev.filter((issue) => issue.id !== id));
+      
+      fetchIssues(); // تحديث القائمة بعد الحذف
     } catch (err) {
       setError(err.message);
     }
   };
-
+  
   const updateIssueStatus = async (id, newStatus) => {
     try {
       const response = await fetch(`${API_URL}/${id}`, {
@@ -63,12 +43,13 @@ const IssuesList = () => {
         body: JSON.stringify({ data: { issueStatus: newStatus } }),
       });
       if (!response.ok) throw new Error("فشل في تحديث المشكلة");
-      fetchIssues();
+      
+      fetchIssues(); // تحديث القائمة بعد التغيير
     } catch (err) {
       setError(err.message);
     }
   };
-
+  
   if (loading) return <p className="text-center text-white">جارٍ التحميل...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
