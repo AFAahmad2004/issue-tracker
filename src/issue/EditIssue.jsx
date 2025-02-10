@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 const EditIssue = () => {
   const { id } = useParams(); // الحصول على الـ ID من الـ URL
   const navigate = useNavigate();
-  
+
   const [issue, setIssue] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -12,7 +12,7 @@ const EditIssue = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!id || isNaN(Number(id))) {
+    if (!id) {
       setError("رقم المشكلة غير صالح!");
       return;
     }
@@ -22,19 +22,19 @@ const EditIssue = () => {
 
   const fetchIssueById = async (issueId) => {
     try {
-      const response = await fetch("http://localhost:5173/edit");
+      const response = await fetch(`http://localhost:1337/api/issues/${issueId}`);
       const data = await response.json();
-      
+
       console.log("Fetched Data:", data); // ✅ طباعة البيانات للتحقق
-      
+
       if (!data || !data.data) {
         throw new Error("المشكلة غير موجودة!");
       }
-  
+
       setIssue(data.data);
-      setTitle(data.data.attributes.title);
-      setDescription(data.data.attributes.description);
-      setStatus(data.data.attributes.issueStatus);
+      setTitle(data.data.title);
+      setDescription(data.data.description);
+      setStatus(data.data.issueStatus);
     } catch (err) {
       setError("فشل في جلب تفاصيل المشكلة");
       console.error(err);
@@ -52,7 +52,9 @@ const EditIssue = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5173/edit", {
+      console.log("data:",updatedIssue);
+      
+      const response = await fetch(`http://localhost:1337/api/issues/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -63,9 +65,12 @@ const EditIssue = () => {
       if (!response.ok) {
         throw new Error("فشل في تحديث المشكلة");
       }
+console.log(response);
 
       navigate("/issues"); // العودة إلى صفحة قائمة المشاكل بعد التحديث
     } catch (err) {
+      console.log("error: ",err);
+      
       setError(err.message);
     }
   };
@@ -74,10 +79,12 @@ const EditIssue = () => {
     <div className="max-w-4xl mx-auto p-6 bg-gray-800 text-white rounded-xl shadow-xl">
       <h2 className="text-3xl font-bold text-center mb-6">تعديل المشكلة</h2>
       {error && <p className="text-red-500 text-center">{error}</p>}
-      
+
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="title" className="block text-xl mb-2">اسم المشكلة</label>
+          <label htmlFor="title" className="block text-xl mb-2">
+            اسم المشكلة
+          </label>
           <input
             id="title"
             type="text"
@@ -86,9 +93,11 @@ const EditIssue = () => {
             className="w-full p-2 bg-gray-700 text-white rounded-lg"
           />
         </div>
-        
+
         <div className="mb-4">
-          <label htmlFor="description" className="block text-xl mb-2">الوصف</label>
+          <label htmlFor="description" className="block text-xl mb-2">
+            الوصف
+          </label>
           <textarea
             id="description"
             value={description}
@@ -96,9 +105,11 @@ const EditIssue = () => {
             className="w-full p-2 bg-gray-700 text-white rounded-lg"
           />
         </div>
-        
+
         <div className="mb-4">
-          <label htmlFor="status" className="block text-xl mb-2">الحالة</label>
+          <label htmlFor="status" className="block text-xl mb-2">
+            الحالة
+          </label>
           <select
             id="status"
             value={status}
@@ -106,7 +117,7 @@ const EditIssue = () => {
             className="w-full p-2 bg-gray-700 text-white rounded-lg"
           >
             <option value="Open">مفتوحة</option>
-            <option value="In Progress">قيد التنفيذ</option>
+            <option value="In-progress">قيد التنفيذ</option>
             <option value="Closed">مغلقة</option>
           </select>
         </div>

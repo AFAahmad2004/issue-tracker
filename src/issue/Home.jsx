@@ -9,9 +9,9 @@ const Home = () => {
         <Link to="/add" className="px-6 py-3 bg-blue-600 text-white rounded-lg">
           إضافة مشكلة
         </Link>
-        <Link to="/edit" className="px-6 py-3 bg-yellow-600 text-white rounded-lg">
+        {/* <Link to="/edit" className="px-6 py-3 bg-yellow-600 text-white rounded-lg">
           تعديل مشكلة
-        </Link>
+        </Link> */}
         <Link to="/issues" className="px-6 py-3 bg-green-600 text-white rounded-lg">
           عرض جميع المشاكل
         </Link>

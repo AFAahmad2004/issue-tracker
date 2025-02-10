@@ -12,6 +12,8 @@ const IssuesList = () => {
       const response = await fetch(API_URL);
       if (!response.ok) throw new Error("فشل في جلب المشاكل");
       const data = await response.json();
+      console.log(data);
+      
       setIssues(data.data);
     } catch (err) {
       setError(err.message);
@@ -77,7 +79,7 @@ const IssuesList = () => {
 
                 <div className="mt-3 space-x-2">
                   <Link
-                    to={`/edit`}
+                    to={`/edit/${issue.documentId}`}
                     className="px-3 py-1 bg-blue-500 text-white rounded-md"
                   >
                     تعديل
