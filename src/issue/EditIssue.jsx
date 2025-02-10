@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 const EditIssue = () => {
-  const { id} = useParams(); // الحصول على الـ ID من الـ URL
+  const { id } = useParams(); // الحصول على الـ ID من الـ URL
   const navigate = useNavigate();
   
   const [issue, setIssue] = useState(null);
@@ -12,14 +12,25 @@ const EditIssue = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchIssueById();
+    if (!id || isNaN(Number(id))) {
+      setError("رقم المشكلة غير صالح!");
+      return;
+    }
+
+    fetchIssueById(id);
   }, [id]);
 
-  const fetchIssueById = async () => {
+  const fetchIssueById = async (issueId) => {
     try {
-      if (!id) throw new Error("ID غير موجود");
-      const response = await fetch(`http://localhost:1337/api/issues/${id}?populate=*`);
+      const response = await fetch("http://localhost:1337/api/issues/gzqibaz2mqihkqshyyb7u2ux");
       const data = await response.json();
+      
+      console.log("Fetched Data:", data); // ✅ طباعة البيانات للتحقق
+      
+      if (!data || !data.data) {
+        throw new Error("المشكلة غير موجودة!");
+      }
+  
       setIssue(data.data);
       setTitle(data.data.attributes.title);
       setDescription(data.data.attributes.description);
@@ -29,7 +40,6 @@ const EditIssue = () => {
       console.error(err);
     }
   };
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,7 +52,7 @@ const EditIssue = () => {
     };
 
     try {
-      const response = await fetch(`http://localhost:1337/api/issues/${id}`, {
+      const response = await fetch("http://localhost:1337/api/issues/gzqibaz2mqihkqshyyb7u2ux", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -59,8 +69,6 @@ const EditIssue = () => {
       setError(err.message);
     }
   };
-
-  if (!issue) return <p>جارٍ التحميل...</p>;
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-gray-800 text-white rounded-xl shadow-xl">
