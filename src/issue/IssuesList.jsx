@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const IssuesList = () => {
   const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const API_URL = "http://localhost:1337/api/issues";
+
   const fetchIssues = async () => {
     try {
       const response = await fetch(API_URL);
       if (!response.ok) throw new Error("فشل في جلب المشاكل");
       const data = await response.json();
-      console.log("data:", data);
-
       setIssues(data.data);
     } catch (err) {
       setError(err.message);
@@ -29,23 +28,7 @@ const IssuesList = () => {
     try {
       const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
       if (!response.ok) throw new Error("فشل في حذف المشكلة");
-
       fetchIssues(); // تحديث القائمة بعد الحذف
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
-  const updateIssueStatus = async (id, newStatus) => {
-    try {
-      const response = await fetch(`${API_URL}/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data: { issueStatus: newStatus } }),
-      });
-      if (!response.ok) throw new Error("فشل في تحديث المشكلة");
-
-      fetchIssues(); // تحديث القائمة بعد التغيير
     } catch (err) {
       setError(err.message);
     }
@@ -93,12 +76,12 @@ const IssuesList = () => {
                 </span>
 
                 <div className="mt-3 space-x-2">
-                  <button
-                    onClick={() => updateIssueStatus(issue.id, "Closed")}
+                  <Link
+                    to={`/edit`}
                     className="px-3 py-1 bg-blue-500 text-white rounded-md"
                   >
-                    إغلاق
-                  </button>
+                    تعديل
+                  </Link>
                   <button
                     onClick={() => deleteIssue(issue.id)}
                     className="px-3 py-1 bg-red-600 text-white rounded-md"

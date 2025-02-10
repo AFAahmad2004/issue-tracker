@@ -22,7 +22,7 @@ const EditIssue = () => {
 
   const fetchIssueById = async (issueId) => {
     try {
-      const response = await fetch("http://localhost:1337/api/issues/gzqibaz2mqihkqshyyb7u2ux");
+      const response = await fetch("http://localhost:5173/edit");
       const data = await response.json();
       
       console.log("Fetched Data:", data); // ✅ طباعة البيانات للتحقق
@@ -52,7 +52,7 @@ const EditIssue = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:1337/api/issues/gzqibaz2mqihkqshyyb7u2ux", {
+      const response = await fetch("http://localhost:5173/edit", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
